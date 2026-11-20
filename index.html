@@ -19,7 +19,7 @@ small{color:#aab6ce}.good{color:#73e0a1}.bad{color:#ff8585}
 <h1>Auto Guild Join</h1><div class="muted">Upload accounts and start your guild join task.</div>
 <div class="field"><label>Accounts JSON (must contain uid and password)</label><input id="file" type="file" accept=".json,application/json"><small id="fileInfo">No file selected</small></div>
 <div class="field"><label>Manual Guild ID (optional; overrides each account's clan_id)</label><input id="guild" placeholder="Enter Guild ID"></div>
-<div class="field"><label>Default region</label><input id="region" value="BD"></div>
+
 <div class="actions"><button id="start">Start Auto Join</button><button id="stop" disabled>Stop</button></div>
 <div class="stats"><div class="stat"><b id="total">0</b><small>Total</small></div><div class="stat"><b id="done">0</b><small>Processed</small></div><div class="stat"><b id="success" class="good">0</b><small>Success</small></div><div class="stat"><b id="failed" class="bad">0</b><small>Failed</small></div></div>
 <progress id="progress" value="0" max="100"></progress>
@@ -47,7 +47,7 @@ $('start').onclick=async()=>{
   if(!guild){fail++;done++;log(`Account ${a.uid}: FAILED — no Guild ID (enter one or provide clan_id).`)}
   else try{
    const res=await fetch('/api/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    uid:String(a.uid),password:String(a.password),guild_id:guild,region:String(a.region||$('region').value||'BD')
+    uid:String(a.uid),password:String(a.password),guild_id:guild
    })});
    const data=await res.json().catch(()=>({}));
    if(!res.ok||!data.ok)throw Error(data.error||`HTTP ${res.status}`);

@@ -3,21 +3,23 @@
 ## Deploy
 1. Upload this project to a GitHub repository.
 2. Import the repository in Vercel and deploy.
-3. In Vercel → Project → Settings → Environment Variables, add:
-   - `JOIN_API_URL` = the official account-to-guild join API endpoint
-   - `JOIN_API_TOKEN` = optional bearer token, only if the API requires one
-4. Redeploy after adding environment variables.
+3. Optional: set `JOIN_API_URL` in Vercel Environment Variables if you need to override the default endpoint.
+4. Redeploy after changing environment variables.
+
+Default upstream endpoint:
+`https://danger-guild-management-web.vercel.app/join?guild_id={guild_id}&uid={guest_uid}&password={guest_pw}`
+
+The server calls this endpoint with GET. No region parameter is sent.
 
 ## Account JSON
-Top-level array. Each account needs `uid` and `password`. `region` and `clan_id` are optional.
+Top-level array. Each account needs `uid` and `password`. `clan_id` is optional.
 Example:
 ```json
 [
-  {"uid":"123456789","password":"example","region":"BD","clan_id":"3106912234"}
+  {"uid":"123456789","password":"example","clan_id":"3106912234"}
 ]
 ```
 
-A manual Guild ID entered in the panel overrides `clan_id` for every account. If blank, each account's `clan_id` is used.
+A manual Guild ID entered in the panel overrides `clan_id` for every account. If blank, each account's `clan_id` is used. Extra JSON fields, including `region`, are ignored.
 
-## Important API integration note
-The supplied guild URL (`/guild?guild_id=...&region=...`) does not specify how UID/password authenticate or how an account joins. This project therefore includes a generic server-side POST adapter, not a verified working integration. Update `api/join.js` to match the API provider's documented method, payload, authentication, and success response before using it. Never put credentials or API secrets in frontend code.
+Credentials are sent from the Vercel server to the configured join endpoint. Use only accounts you own or are authorized to manage.
